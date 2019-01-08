@@ -21,7 +21,7 @@ def sigmoid(x):
 
 
 # 训练过程
-random_sample = random.sample(range(0, sample_num), 60000)
+random_sample = random.sample(range(0, sample_num), sample_num)
 cnt = 0
 for num in random_sample:
     cnt += 1
@@ -37,6 +37,10 @@ for num in random_sample:
 
     # 后向过程
     e = out_t - output_act  # 计算输出误差
+
+    if 0.5 * np.dot(e, e) < err_th:
+        break
+
     output_delta = e * output_act * (1.0 - output_act)  # 计算输出层delta
     hidden_delta = hidden_act * (1.0 - hidden_act) * np.dot(wjk, output_delta)  # 计算隐层delta
     for i in range(0, output_num):
@@ -46,8 +50,6 @@ for num in random_sample:
     output_offset += hidden_learn_rate * output_delta  # 输出层偏置更新
     hidden_offset += input_learn_rate * hidden_delta  # 隐层偏置更新
 
-    if 0.5 * np.dot(e, e) < err_th:
-        break
 
 print("训练完毕！")
 
